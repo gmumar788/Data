@@ -1,0 +1,14 @@
+SELECT 
+job_title, 
+job_location, 
+job_work_from_home
+FROM job_postings_fact
+WHERE job_location LIKE '%Australia%' 
+AND job_work_from_home = TRUE;
+
+
+--Find the average salary_hour_avg for jobs in Australia.
+
+SELECT AVG(salary_hour_avg) AS avg_hourly_salary
+FROM public.job_postings_fact
+WHERE job_location LIKE '%Australia%';
