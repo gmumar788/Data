@@ -165,3 +165,144 @@ ORDER BY
 - ***Insight***: Senior roles reflect an emphasis on leadership and strategic decision-making in data analytics. Other job titles like Data Analyst, Marketing and ERM Data Analyst suggest niche areas within the field.
 
 ![Job Title Frequency](/Visulisations/output_2.3.png)
+
+### 3.What are the most in-demand skills for Data Analysts in Australia? 📊
+
+To identify the most in-demand skills for Data Analysts in Australia 📊, I analyzed job postings to determine the frequency of specific skills required. Here's how I approached it:
+
+***Data Collection***: I gathered job postings for Data Analyst positions located in Australia.
+
+***Data Processing***: I joined the job postings data with the skills data using the job_id to associate each job posting with its required skills.
+
+***Frequency Analysis***: I counted the occurrences of each skill across all job postings to determine which skills were most frequently requested by employers.
+
+***Ranking***: I sorted the skills by their frequency in descending order to identify the top in-demand skills.
+
+```
+SELECT 
+    s.skills,
+    COUNT(sj.job_id) AS demand_count
+FROM job_postings_fact jp
+INNER JOIN skills_job_dim sj ON jp.job_id = sj.job_id
+INNER JOIN skills_dim s ON sj.skill_id = s.skill_id
+WHERE 
+    jp.job_location LIKE '%Australia%' 
+    AND jp.job_title_short = 'Data Analyst'
+GROUP BY
+    s.skills
+ORDER BY 
+    demand_count DESC
+LIMIT 5;
+```
+![Demand Count Of Skills](/Visulisations/output_3.1.png)
+
+The bar chart visualizes the Demand Count of Skills:
+
+***SQL*** leads with the highest demand, reflecting its critical role in database management.
+
+***Power BI*** and ***Python*** are equally in demand, showcasing the need for both business intelligence tools and programming skills.
+
+***Excel*** follows closely, underlining its continued importance despite newer tools.
+
+***R*** has the least demand among the listed skills but is still significant in specialized roles.
+
+
+### 4. What skills correlate with the highest average salaries?
+To identify skills that correlate with the highest average salaries, I analyzed job postings with specified salaries and joined the job postings table with the skills table using the job_id. I then calculated the average annual salary for each skill and ordered the results in descending order. This approach highlighted the technical and domain-specific skills associated with the most lucrative Data Analyst roles, helping to identify the most financially rewarding expertise in the field.
+
+```
+SELECT 
+    s.skills,
+    ROUND(AVG(jp.salary_year_avg), 0) AS avg_salary
+FROM job_postings_fact jp
+INNER JOIN skills_job_dim sj ON jp.job_id = sj.job_id
+INNER JOIN skills_dim s ON sj.skill_id = s.skill_id
+WHERE
+    jp.job_title_short = 'Data Analyst'
+    AND jp.salary_year_avg IS NOT NULL
+    A
+GROUP BY
+    s.skills
+ORDER BY
+    avg_salary DESC
+LIMIT 25;
+```
+
+![Top 10 Skills By Average Salary](/Visulisations/output_4.1.png)
+
+The bar chart visualizes the Top 10 Skills by Average Salary, highlighting the skills with the highest earning potential:
+
+PySpark leads with the highest average salary of $208,172.
+Bitbucket and Couchbase follow closely, indicating their high demand in specialized roles.
+The chart shows that advanced skills in tools like Datarobot, GitLab, and Jupyter also command competitive salaries.
+
+
+### 5. What are the optimal skills to learn that are both in high demand and financially rewarding?
+
+To identify optimal skills that are both in high demand and financially rewarding, I combined two analyses:
+
+Skill Demand: I calculated the frequency of each skill across job postings to determine the most in-demand skills.
+
+Financial Reward: I computed the average salary associated with each skill to find those linked to higher pay.
+
+I then joined the results of these two analyses and filtered for skills with both high demand (occurring frequently) and high average salaries. By ranking the skills based on salary and demand, I highlighted those offering the best combination of job security and financial benefit.
+
+```
+WITH skills_demand AS (
+    SELECT
+        s.skill_id,
+        s.skills,
+        COUNT(sj.job_id) AS demand_count
+    FROM job_postings_fact jp
+    INNER JOIN skills_job_dim sj ON jp.job_id = sj.job_id
+    INNER JOIN skills_dim s ON sj.skill_id = s.skill_id
+    WHERE
+        jp.job_title_short = 'Data Analyst'
+        AND jp.salary_year_avg IS NOT NULL
+    GROUP BY
+        s.skill_id
+), 
+average_salary AS (
+    SELECT 
+        s.skill_id,
+        ROUND(AVG(jp.salary_year_avg), 0) AS avg_salary
+    FROM job_postings_fact jp
+    INNER JOIN skills_job_dim sj ON jp.job_id = sj.job_id
+    INNER JOIN skills_dim s ON sj.skill_id = s.skill_id
+    WHERE
+        jp.job_title_short = 'Data Analyst'
+        AND jp.salary_year_avg IS NOT NULL
+    GROUP BY
+        s.skill_id
+)
+SELECT
+    d.skills,
+    d.demand_count,
+    a.avg_salary
+FROM
+    skills_demand d
+INNER JOIN average_salary a ON d.skill_id = a.skill_id
+WHERE  
+    d.demand_count > 10
+ORDER BY
+    a.avg_salary DESC,
+    d.demand_count DESC
+LIMIT 25;
+```
+The visualizations represent the insights from the dataset:
+
+***Top 10 Skills by Demand Count***:
+
+***Python*** and ***Tableau*** lead the chart, showcasing their widespread demand across industries.
+Other notable skills like R, Snowflake, and Azure also indicate their relevance in data and cloud computing roles.
+
+![Top 10 Skills by Demand Count](/Visulisations/output_5.1.png)
+
+***Top 10 Skills by Average Salary***:
+
+***Go*** offers the highest average salary, highlighting its specialized demand in software development and backend systems.
+Skills like ***Confluence***, ***Hadoop***, and ***Snowflake*** are also highly lucrative, reflecting their niche roles in data management and collaboration.
+
+![Top 10 Skills by Average Salary](/Visulisations/output_5.2.png)
+
+
