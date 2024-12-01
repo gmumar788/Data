@@ -103,13 +103,13 @@ This analysis underscores the dynamic opportunities in the data analytics sector
 ### Salary Distribution
 - **Observation**: The histogram shows that most salaries cluster in the $180,000 - $250,000 range, with only a few roles offering salaries significantly above this range.
 - ***Insight***: This suggests that while high-paying roles like the one offering $650,000 exist, the majority of roles are in a more moderate salary band, indicating varied opportunities across experience and skill levels.
-![Salary Distribution](/Visulisations\output_1.1.png)
+![Salary Distribution](/Visulisations/output_1.1.png)
 
 ### Job Salaries by Posting Date
 - ***Observation***: The scatter plot reveals that higher salaries, such as the $650,000 job, tend to be posted earlier in the year, while jobs with salaries in the $180,000–$250,000 range are spread throughout the year.
 - ***Insight***: Companies might prioritize advertising high-paying roles early in the year to secure top talent, while mid-range roles are consistently available throughout the year.
 
-![Salaries by Posting Date](/Visulisations\output_1.2.png)
+![Salaries by Posting Date](/Visulisations/output_1.2.png)
 
 Python code? Check it out here: [code for visulisation](/Visulisations/1_Top_Paying_Job_Australia.ipynb)
 
@@ -151,3 +151,17 @@ INNER JOIN skills_dim s ON sj.skill_id = s.skill_id
 ORDER BY
     top_paying_jobs.salary_year_avg DESC;
 ```
+### Insights from the Visualizations
+#### ***Frequency of Skills Across Job Listings***
+- ***Observation***: The most frequently required skills are SQL, Python, and Tableau, indicating their importance in data analytics roles.
+- ***Insight***: These skills are foundational for most data analytics jobs and are highly valued across industries. Other notable skills like Snowflake, Pandas, and Excel also highlight the need for data manipulation and cloud technologies.
+![Frequency Of Skills Across Job Listings](/Visulisations/output_2.1.png)
+#### ***Average Salary by Company***
+- ***Observation***: AT&T offers the highest average salary, followed by Pinterest Job Advertisements and Uclahealthcareers.
+- ***Insight***: Companies with higher salaries likely prioritize experienced professionals and leadership roles in data analytics. This trend shows the variation in salary expectations across different organizations and industries.
+![Average Salary By Company](/Visulisations/output_2.2.png)
+#### ***Job Title Frequency***
+- ***Observation***: The most common roles are Associate Director- Data Insights and Director, Data Analyst - HYBRID, indicating a demand for senior-level positions.
+- ***Insight***: Senior roles reflect an emphasis on leadership and strategic decision-making in data analytics. Other job titles like Data Analyst, Marketing and ERM Data Analyst suggest niche areas within the field.
+
+![Job Title Frequency](/Visulisations/output_2.3.png)
