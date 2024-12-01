@@ -86,7 +86,7 @@ ORDER BY
 LIMIT 10;
 ```
 Here's the breakdown of the top data analyst jobs in Australia or Anywhere in 2023:
-![Top 10 Salaries by Company](Visulisations\output_1.3.png)
+![Top 10 Salaries by Company](/Visulisations/output_1.3.png)
 - ***Wide Salary Range***
 The salaries among the top-paying companies range from $184,000 to $650,000, highlighting significant earning potential in the data analytics field. The large gap reflects varied compensation strategies, driven by role seniority, specialization, and industry demand.
 
@@ -103,15 +103,51 @@ This analysis underscores the dynamic opportunities in the data analytics sector
 ### Salary Distribution
 - **Observation**: The histogram shows that most salaries cluster in the $180,000 - $250,000 range, with only a few roles offering salaries significantly above this range.
 - ***Insight***: This suggests that while high-paying roles like the one offering $650,000 exist, the majority of roles are in a more moderate salary band, indicating varied opportunities across experience and skill levels.
-![Salary Distribution](Visulisations\output_1.1.png)
+![Salary Distribution](/Visulisations\output_1.1.png)
 
 ### Job Salaries by Posting Date
 - ***Observation***: The scatter plot reveals that higher salaries, such as the $650,000 job, tend to be posted earlier in the year, while jobs with salaries in the $180,000–$250,000 range are spread throughout the year.
 - ***Insight***: Companies might prioritize advertising high-paying roles early in the year to secure top talent, while mid-range roles are consistently available throughout the year.
 
-![Salaries by Posting Date](Visulisations\output_1.2.png)
+![Salaries by Posting Date](/Visulisations\output_1.2.png)
 
 Python code? Check it out here: [code for visulisation](/Visulisations/1_Top_Paying_Job_Australia.ipynb)
 
 These graphs were created using Python's powerful data visualization libraries, such as Matplotlib
 📊 and Pandas 🐼. The data was first processed and analyzed in a Pandas DataFrame 📋, and then visualized to provide insights into salary distributions, posting trends, and top-paying companies for data analyst roles. The Python scripts used functions like plt.hist 📈, plt.scatter ✨, and plt.bar 📊 to generate the charts, showcasing the flexibility and effectiveness of Python in data analysis and visualization tasks. 🚀
+
+### 2.What skills are required for the top-paying Data Analyst jobs? 🛠️
+
+To determine the skills required for the top-paying Data Analyst jobs, I first identified the top 10 highest-paying Data Analyst roles using a query that ranked jobs by their average annual salary. Then, I joined this result with the skills data using the job_id to extract the specific skills associated with these roles. By linking job postings to their respective required skills through a skills table, I was able to uncover the technical and domain-specific expertise valued in the highest-paying positions. The final query provided insights into the most critical skills demanded by top employers.
+
+```sql
+WITH top_paying_jobs AS (
+    SELECT	
+        jp.job_id,
+        jp.job_title,
+        jp.salary_year_avg,
+        c.name AS company_name
+    FROM
+        job_postings_fact jp
+    LEFT JOIN company_dim c ON jp.company_id = c.company_id
+    WHERE
+        jp.job_title_short = 'Data Analyst' 
+        AND jp.job_location IN ('Anywhere', 'Australia') 
+        AND jp.salary_year_avg IS NOT NULL
+    ORDER BY
+        jp.salary_year_avg DESC
+    LIMIT 10
+)
+
+SELECT 
+    top_paying_jobs.job_id,
+    top_paying_jobs.job_title,
+    top_paying_jobs.salary_year_avg,
+    top_paying_jobs.company_name,
+    s.skills
+FROM top_paying_jobs
+INNER JOIN skills_job_dim sj ON top_paying_jobs.job_id = sj.job_id
+INNER JOIN skills_dim s ON sj.skill_id = s.skill_id
+ORDER BY
+    top_paying_jobs.salary_year_avg DESC;
+```
