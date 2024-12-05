@@ -1,0 +1,10 @@
+SELECT 
+    s.skills, 
+    COUNT(sj.job_id) AS job_count
+FROM public.skills_job_dim sj
+JOIN public.job_postings_fact jp ON sj.job_id = jp.job_id
+JOIN public.skills_dim s ON sj.skill_id = s.skill_id
+WHERE jp.job_location LIKE '%Australia%'
+GROUP BY s.skills
+ORDER BY job_count DESC
+LIMIT 3;

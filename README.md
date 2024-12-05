@@ -3,6 +3,10 @@
 
 🔍 SQL queries? Check them out here: [project_sql folder](/Project_SQL/)
 
+✅ query  results? Check them out here: [Query_result folder](/Query_Results_csv/)
+
+📊 (Visualization Check them out here:)[Visulisation folder](/Visulisations/)
+
 # Background
 
 The demand for Data Analysts 📊 has been growing rapidly across industries as organizations increasingly rely on data-driven insights 📈 to drive decisions and improve operational efficiencies. Australia 🌏, being a hub of diverse industries and technological advancements, offers a dynamic job market for Data Analysts, with remote opportunities 💻 further enhancing its appeal for professionals. This project aims to explore the Australian job market for Data Analysts, focusing on identifying high-paying opportunities 💰, in-demand skills 🛠️, and trends 📅 that could help professionals align their expertise with market requirements.
@@ -28,17 +32,12 @@ The project leverages a dataset 🗂️ comprising job postings across Australia
 6. ***How do job trends vary across Australian locations? 🌏***
 🗺️ Investigated job counts and work-from-home opportunities across different cities to understand regional trends.
 
-7. ***What percentage of Data Analyst roles in Australia offer work-from-home options? 💻***
-🏠 Evaluated the flexibility in job offerings, reflecting the shift toward remote work.
-
-8. ***What are the most prominent companies hiring Data Analysts in Australia? 🏢***
+7. ***What are the most prominent companies hiring Data Analysts in Australia? 🏢***
 📋 Identified companies with the highest number of job postings to highlight major employers in the field.
 
-9. ***How do job requirements and salaries align for Data Analyst roles in Australia? 📜***
+8. ***How do job requirements and salaries align for Data Analyst roles in Australia? 📜***
 🔍 Analyzed job descriptions for no-degree requirements and health benefits to assess inclusivity and perks in the job market.
 
-10. ***What are the average salaries for Data Analyst roles in Australia? 💵***
-📊 Computed average yearly and hourly salaries to provide insights into earning expectations in the field.
 
 # 🧑‍💻 Tools Used:
 
@@ -178,7 +177,7 @@ To identify the most in-demand skills for Data Analysts in Australia 📊, I ana
 
 ***Ranking***: I sorted the skills by their frequency in descending order to identify the top in-demand skills.
 
-```
+```sql
 SELECT 
     s.skills,
     COUNT(sj.job_id) AS demand_count
@@ -210,7 +209,7 @@ The bar chart visualizes the Demand Count of Skills:
 ### 4. What skills correlate with the highest average salaries?
 To identify skills that correlate with the highest average salaries, I analyzed job postings with specified salaries and joined the job postings table with the skills table using the job_id. I then calculated the average annual salary for each skill and ordered the results in descending order. This approach highlighted the technical and domain-specific skills associated with the most lucrative Data Analyst roles, helping to identify the most financially rewarding expertise in the field.
 
-```
+```sql
 SELECT 
     s.skills,
     ROUND(AVG(jp.salary_year_avg), 0) AS avg_salary
@@ -247,7 +246,7 @@ Financial Reward: I computed the average salary associated with each skill to fi
 
 I then joined the results of these two analyses and filtered for skills with both high demand (occurring frequently) and high average salaries. By ranking the skills based on salary and demand, I highlighted those offering the best combination of job security and financial benefit.
 
-```
+```sql
 WITH skills_demand AS (
     SELECT
         s.skill_id,
@@ -305,4 +304,116 @@ Skills like ***Confluence***, ***Hadoop***, and ***Snowflake*** are also highly 
 
 ![Top 10 Skills by Average Salary](/Visulisations/output_5.2.png)
 
+### 6 .How do job trends vary across Australian locations?
 
+To analyze job trends across Australian locations, I used SQL to:
+
+Extract Job Locations: Filtered job postings for Data Analyst roles within Australia.
+
+Count Job Postings: Grouped the data by location and calculated the number of postings per location.
+
+Sort Locations: Ordered the results in descending order to identify locations with the highest concentration of job opportunities.
+
+This approach highlighted the distribution of Data Analyst roles across different Australian cities, providing insights into regional demand and opportunities.
+
+```sql
+SELECT 
+    jp.job_location, 
+    COUNT(*) AS job_count
+FROM job_postings_fact jp
+WHERE 
+    jp.job_title ILIKE '%Data Analyst%' 
+    AND jp.job_location LIKE '%Australia%'
+GROUP BY 
+    jp.job_location
+ORDER BY 
+    job_count DESC;
+```
+![Top 10 Job Locations By Job Count In Australia](/Visulisations/output_6.1.png)
+
+The data shows that most job opportunities in Australia are concentrated in major cities and states. The top location is Australia as a whole, with 808 jobs, followed by Sydney, NSW (90 jobs) and Melbourne, VIC (80 jobs). Other cities like Canberra, Brisbane, and Perth have fewer opportunities, with counts ranging from 36 to 26 jobs. Regional and suburban areas have significantly lower job counts, often only 1-4 jobs. This highlights a strong centralization of job availability in metropolitan regions.
+
+### 7.What are the most prominent companies hiring Data Analysts in Australia?
+
+To identify the top skills required in Australian job postings, I used SQL to analyze data by joining the skills_job_dim, job_postings_fact, and skills_dim tables, linking job postings with their associated skills. I filtered the results to include only jobs located in Australia and grouped the data by skill names to calculate how frequently each skill appeared in the postings. By ordering the skills in descending order of frequency, I was able to determine the top three most in-demand skills. This analysis provided valuable insights into the key skills that are highly sought after by employers in the Australian job market.
+
+```sql
+SELECT 
+    s.skills, 
+    COUNT(sj.job_id) AS job_count
+FROM public.skills_job_dim sj
+JOIN public.job_postings_fact jp ON sj.job_id = jp.job_id
+JOIN public.skills_dim s ON sj.skill_id = s.skill_id
+WHERE jp.job_location LIKE '%Australia%'
+GROUP BY s.skills
+ORDER BY job_count DESC
+LIMIT 3;
+```
+![Top 10 Companies Hiring In Australia](/Visulisations/output_7.1.png)
+
+The analysis reveals the top 10 companies hiring in Australia based on job postings, with Macquarie Group leading the chart at 260 postings, reflecting its substantial hiring needs and prominence in the job market. Following closely are Confidential and Amazon Services Inc., with 222 and 176 postings, respectively, showcasing significant demand across diverse sectors. Workforce Australia for Individuals, a government initiative, ranks fourth with 145 postings, highlighting public sector opportunities. Recruitment firms like Hays and Sky, both with 123 postings, demonstrate strong hiring activity in staffing and media. Peoplebank, specializing in IT recruitment, features prominently with 104 postings, emphasizing the tech sector's importance. Similarly, Randstad and Commonwealth Bank, with 85 and 83 postings, respectively, represent diverse hiring in general staffing and financial services. Completing the top 10 are HAYS and Talenza, with the latter's focus on tech-related roles further emphasizing the demand for technology expertise in Australia. This analysis highlights a robust job market driven by technology, finance, and government hiring initiatives.
+
+### 8. What are the most prominent companies hiring Data Analysts in Australia?
+
+
+To identify the most prominent companies hiring Data Analysts in Australia, I utilized a SQL query that joined job postings data with company information. The analysis focused on job postings located in Australia and filtered specifically for roles titled "Data Analyst." By grouping the data by company names and counting the number of job postings for each, I was able to determine the hiring frequency across organizations. The results were sorted in descending order by the number of job postings, highlighting the top 10 companies with the highest demand for Data Analysts. This method provided clear insights into the leading employers actively recruiting for this role in Australia.
+
+```sql
+-- Identify companies with the highest number of job postings for Data Analysts in Australia
+SELECT 
+    c.name AS company_name,
+    COUNT(jp.job_id) AS job_count
+FROM public.job_postings_fact jp
+JOIN public.company_dim c ON jp.company_id = c.company_id
+WHERE jp.job_location LIKE '%Australia%' 
+  AND jp.job_title ILIKE '%Data Analyst%'
+GROUP BY c.name
+ORDER BY job_count DESC
+LIMIT 10;
+
+```
+
+![Top Companies Hiring Data Analysts In Australia](/Visulisations/output_8.1.png)
+
+The bar chart above visualizes the top companies hiring data analysts in Australia, based on job postings. "Confidential" leads with the highest number of postings (52), followed by "Macquarie Group" (18) and "Hays" (17). Other prominent companies include "Peoplebank," "Providence Health & Services," and "Talent," each contributing significantly to the market demand. This analysis highlights the competitive hiring landscape and key players in the industry.
+
+### What I Learned
+Throughout this journey, I supercharged my data analytics skill set with some powerhouse upgrades:
+
+🔍 Advanced Query Mastery: Perfected the craft of creating intricate SQL queries, joining multiple tables seamlessly, and wielding WITH clauses to orchestrate complex temporary table operations like a pro.
+
+📊 Data Aggregation Genius: Built a solid partnership with GROUP BY, transforming aggregate functions like COUNT(), SUM(), and AVG() into my go-to tools for extracting meaningful patterns from raw data.
+
+🛠️ Skill-to-Salary Connections: Developed a knack for linking skills with financial insights, mapping high-demand proficiencies to lucrative salary trends with pinpoint accuracy.
+
+💡 Insight-Driven Analytics: Translated real-world questions into powerful, actionable insights through analytical SQL queries, making sense of complex datasets with ease.
+
+🌏 Market Intelligence: Gained a nuanced understanding of Australia's job market trends, honing skills to uncover where high demand meets high reward for Data Analysts.
+
+🚀 Visualization Expertise: Transformed raw data into impactful visual stories using Python, creating intuitive graphs and charts that bring the numbers to life.
+
+This adventure has not only bolstered my technical capabilities but also shaped my analytical mindset, empowering me to tackle data challenges with confidence and creativity.
+
+### Conclusions
+
+#### Insights
+
+From the analysis, several noteworthy insights surfaced:
+
+💰 Top-Paying Data Analyst Jobs: The highest-paying Data Analyst roles in Australia offer salaries ranging up to $650,000, showcasing the significant earning potential in the field.
+
+🛠️ Skills for Top-Paying Jobs: Advanced proficiency in SQL, Python, and Tableau emerged as essential for securing top-paying jobs, highlighting their critical role in the data analytics domain.
+
+📊 Most In-Demand Skills: SQL, Power BI, and Python dominate as the most sought-after skills, cementing their status as foundational for success in the job market.
+
+💵 Skills with Higher Salaries: Specialized tools like PySpark, Snowflake, and Go are linked to the highest average salaries, indicating a premium on expertise in advanced or niche technologies.
+
+🎯 Optimal Skills for Market Value: Python and Tableau strike the ideal balance between demand and salary, making them top priorities for professionals aiming to maximize their value in the job market.
+
+This analysis highlights the dynamic and competitive landscape of Data Analyst roles in Australia, guiding job seekers to align their skills with market demands and organizations to refine their hiring strategies.
+
+
+### Closing Thoughts
+This project significantly boosted my SQL expertise and deepened my understanding of the data analyst job market in Australia. The analysis offers a roadmap for prioritizing skill development and targeting job search efforts effectively. For aspiring data analysts, focusing on high-demand and high-salary skills like SQL, Python, and Tableau can provide a competitive edge.
+
+The findings underscore the importance of continuous skill enhancement and adapting to industry trends. By aligning expertise with market requirements, professionals can unlock rewarding opportunities and excel in the dynamic field of data analytics.

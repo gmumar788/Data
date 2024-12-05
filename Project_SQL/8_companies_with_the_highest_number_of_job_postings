@@ -1,0 +1,11 @@
+-- Identify companies with the highest number of job postings for Data Analysts in Australia
+SELECT 
+    c.name AS company_name,
+    COUNT(jp.job_id) AS job_count
+FROM public.job_postings_fact jp
+JOIN public.company_dim c ON jp.company_id = c.company_id
+WHERE jp.job_location LIKE '%Australia%' 
+  AND jp.job_title ILIKE '%Data Analyst%'
+GROUP BY c.name
+ORDER BY job_count DESC
+LIMIT 10;
